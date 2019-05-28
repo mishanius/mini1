@@ -7,12 +7,13 @@ from perfect_match.objects.VertexQ import VertexQ
 class TestFunctionalGraph(unittest.TestCase):
     @staticmethod
     def create_neigbor_expression(i, d, n):
-        return lambda: set([VertexQ(x, lambda: ()) if x<=n else VertexQ(x-n, lambda: ()) for x in range(i, i + d)])
+        return lambda index: VertexQ(i + index, lambda index: None) if index + i <= n and index < d else (
+            VertexQ(index+i - n, lambda index: None) if index < d else None)
 
     def setUp(self):
         d = 2
         n = 3
-        self.label_generator_lambda = lambda : (i for i in range(1, n + 1))
+        self.label_generator_lambda = lambda: (i for i in range(1, n + 1))
         self.label_to_vertex_expression = lambda l: VertexP(l, self.create_neigbor_expression(l, d, n))
         self.graph = BipartiteFunctionalGraph(self.label_generator_lambda, self.label_to_vertex_expression)
 
@@ -25,7 +26,7 @@ class TestFunctionalGraph(unittest.TestCase):
 
     def test_edge(self):
         actual = set([str(x) for x in self.graph.edges()])
-        expected = {'(3P, 3Q)', '(2P, 3Q)', '(3P, 1Q)', '(1P, 1Q)','(2P, 2Q)','(1P, 2Q)'}
+        expected = {'(3P, 3Q)', '(2P, 3Q)', '(3P, 1Q)', '(1P, 1Q)', '(2P, 2Q)', '(1P, 2Q)'}
         self.assertTrue(actual.issubset(expected))
         self.assertTrue(expected.issubset(actual))
 
