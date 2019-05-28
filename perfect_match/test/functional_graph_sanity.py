@@ -19,7 +19,7 @@ class TestFunctionalGraph(unittest.TestCase):
 
     def test_get_vertex(self):
         p = self.graph.get_vertex(2)
-        actual = set([str(x) for x in p.get_neighboors()])
+        actual = set([str(x) for x in p.get_neighbores()])
         expected = {'2Q', '3Q'}
         self.assertTrue(actual.issubset(expected))
         self.assertTrue(expected.issubset(actual))

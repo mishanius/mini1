@@ -4,13 +4,13 @@ from .BipartiteGraph import BipartiteSet
 
 class VertexP(BipartiteVertex):
     ''' inherits  BipartiteVertex
-        :param lable X so that the :BipartiteGraph lable function is X->vertex
+        :param label X so that the :BipartiteGraph label function is X->vertex
         :param neighbor_sup a function : index-> neighbor vertex'''
-    def __init__(self, lable, neighbor_sup):
-        BipartiteVertex.__init__(self, lable, BipartiteSet.P, neighbor_sup)
+    def __init__(self, label, neighbore_sup):
+        BipartiteVertex.__init__(self, label, BipartiteSet.P, neighbore_sup)
 
     def __str__(self):
-        return str(self.lable) + "P"
+        return str(self.label) + "P"
 
     def __repr__(self):
         return self.__str__()

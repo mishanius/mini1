@@ -6,24 +6,30 @@ class BipartiteFunctionalGraph(object):
         this object is actually only a wrapper
     """
 
-    def __init__(self, lable_generator=lambda :(), lable_to_vertex_lambda = lambda l:1/0):
-        """ initializes a graph object
-            If no dictionaries or None is given,
-            an empty bipartite graph will be initiated
+    def __init__(self, label_generator=lambda :(), label_to_vertex_lambda = lambda l:1/0):
+        """ a graph generator: parameters are:
+                label_generator:  a function with no parameters, that returns nothing. what the function
+                                does in generating a label (=name\index) for a new generated vertex (without creating
+                                a vertex).
+                                the function should be a for loop in range (i,n+1)  - this way we get the
+                                wanted size of the graph we'll generate
+                                
+                label_to_vertex_lambda: a function that receives a label, and returns the corresponding vertex
+                (creating the vertex).
         """
-        self.lable_generator = lable_generator
-        self.lable_to_vertex_lambda = lable_to_vertex_lambda
+        self.label_generator = label_generator
+        self.label_to_vertex_lambda = label_to_vertex_lambda
 
 
 
-    def get_vertex(self, lable):
-        return self.lable_to_vertex_lambda(lable)
+    def get_vertex(self, label):
+        return self.label_to_vertex_lambda(label)
 
     def vertices_p(self):
         """
         returns a generator of all the vertices in the graph
         """
-        return (self.lable_to_vertex_lambda(l) for l in self.lable_generator())
+        return (self.label_to_vertex_lambda(l) for l in self.label_generator())
 
     def edges(self):
         """ returns the edges of a graph """
@@ -34,7 +40,7 @@ class BipartiteFunctionalGraph(object):
         creates a edge generator
         """
         for v in self.vertices_p():
-            for n in v.get_neighboors():
+            for n in v.get_neighbores():
                 yield (v,n)
 
 
