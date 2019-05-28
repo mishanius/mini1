@@ -29,7 +29,3 @@ class TestFunctionalGraph(unittest.TestCase):
         expected = {'(3P, 3Q)', '(2P, 3Q)', '(3P, 1Q)', '(1P, 1Q)', '(2P, 2Q)', '(1P, 2Q)'}
         self.assertTrue(actual.issubset(expected))
         self.assertTrue(expected.issubset(actual))
-
-
-if __name__ == '__main__':
-    unittest.main()
