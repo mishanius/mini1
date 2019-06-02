@@ -9,7 +9,7 @@ import time
 
 
 def find_match(bi_graph):
-    s = list(bi_graph.get_p().keys())
+    s = list(bi_graph.get_p().keys()) #DEEP COPIES, NOT A REFERENCE.
     n = len(bi_graph.get_p().keys())
     matches = set()
     supers = {}
@@ -45,7 +45,7 @@ def find_match(bi_graph):
 def truncated_walk(s, b, bi_graph, path, supers, verbous = False):
     if b < 1:
         return False
-    if s in bi_graph.get_p():
+    if s in bi_graph.get_p():  #TODO: what is this check for ?
         next = np.random.choice(bi_graph.get_p()[s], 1)[0]
         path[s] = next
         # print("{0} -> {1}".format(s, next))
@@ -106,10 +106,11 @@ if __name__ == '__main__':
     if args.full:
         for i in range(0,100):
             res = find_match(generate_simple_d_regular_offset_graph(3,2000))
-            # sst = reduce(reducer, res, set())
-            # print(len(sst))
-            # print(sst)
-            # print(res)
-            # print(len(res))
+            #sst = reduce(reducer, res, set())
+            #print(len(sst))
+            #print(sst)
+            #print(res)
+            #print(len(res))
     end = time.time()
     print("took:{}".format(end - start))
+

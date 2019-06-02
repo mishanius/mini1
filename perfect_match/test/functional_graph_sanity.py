@@ -29,3 +29,13 @@ class TestFunctionalGraph(unittest.TestCase):
         expected = {'(3P, 3Q)', '(2P, 3Q)', '(3P, 1Q)', '(1P, 1Q)', '(2P, 2Q)', '(1P, 2Q)'}
         self.assertTrue(actual.issubset(expected))
         self.assertTrue(expected.issubset(actual))
+        n=15
+        g = BipartiteFunctionalGraph(lambda:(i for i in range(1,n+1)),lambda l:VertexP(l,lambda i:VertexQ(l,lambda i: None)))
+        verticesGenerator = g.vertices_p()
+        res =  [x for x in verticesGenerator]
+        print("\n", res,"\n")
+
+
+
+
+
