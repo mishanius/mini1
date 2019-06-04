@@ -61,9 +61,9 @@ def truncated_walk(choosenVertic, b, bi_graph, path, superNodes, pVertices, verb
         path[choosenVertic.__str__()] = next.__str__() #attach the pair (choosenVertice,next)
         return truncated_walk(next, b - 1, bi_graph, path, superNodes, pVertices)
     else:                #this scenerio stands for when choosenVertic is actually from Q
-        superNodeskeys = superNodes.keys()
+        superNodesKeys = superNodes.keys()
         flag=0
-        for x in superNodeskeys:
+        for x in superNodesKeys:
             if choosenVertic.__str__() == x:     #and this verifies this ver doesnt participate yet in the matching
                 flag=1                     #therefore - we want to add it to match
                 break
@@ -77,8 +77,9 @@ def truncated_walk(choosenVertic, b, bi_graph, path, superNodes, pVertices, verb
             path[choosenVertic.__str__()] = paired_in_super
             paired_in_super_vertex = bi_graph.get_vertex(paired_in_super[0])
             neighbors = paired_in_super_vertex.get_neighbores().copy()
-            if choosenVertic in neighbors:
-                neighbors.remove(choosenVertic)
+            listedSuperNodesKeys = list(superNodesKeys)
+            listedSuperNodesKeys.append(choosenVertic.__str__())
+            neighbors = [x for x in neighbors if x.__str__() not in listedSuperNodesKeys]
             next = np.random.choice(neighbors) #choose a new vertex from Q so we can continue the procedure
             path[paired_in_super] = next.__str__()
             return truncated_walk(next, b - 1, bi_graph, path, superNodes, pVertices)
@@ -143,12 +144,14 @@ if __name__ == '__main__':
         print(len(res))
         print(res)
     if args.full:
-        for i in range(0,100):
+        counter=0
+        for i in range(0,10000):
             #TODO: insert argument 'n' aswell to config
             n=10
-            bi_graph = BipartiteFunctionalGraph(lambda:(i for i in range(1,n+1)),lambda l:(VertexP(n, l, lambda i:(VertexQ(n, i,lambda i: None) if int(i)>n else VertexQ(n, int(i)%n, lambda i: None)))))
+            bi_graph = BipartiteFunctionalGraph(lambda:(i for i in range(0,n)),lambda l:(VertexP(n, l, lambda i:(VertexQ(n, i,lambda i: None) if int(i)>n else VertexQ(n, int(i)%n, lambda i: None)))))
             try:
                 res = find_match(bi_graph)
+                counter+=1
                 print("result is: ",res)
             except Exception as msg:
                 print(msg)
@@ -160,4 +163,4 @@ if __name__ == '__main__':
             # print(res)
             # print(len(res))
     end = time.time()
-    print("took:{}".format(end - start))
+    print("took:{}".format(end - start), "and sucseeded: ", counter, " times!")
