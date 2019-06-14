@@ -8,10 +8,19 @@ class BipartiteVertex(ABC):
         abstract class representing a vertex in a bipartite graph
         each vertex is BipartiteSet.Q or BipartiteSet.P
         each vertex got a neighboor suplier: function: i->BipartiteVertex
+        each vertex got a label (an integer representing the number of the vertex)
+        each vertex got a name a string that includes the number of the vertex and more data
         """
         self.lable = lable
         self.vertex_set = vertex_set
         self.neighbor_suplier = neighbor_sup
+
+    @property
+    def name(self):
+        return self.__str__()
+
+    def __hash__(self):
+        return hash(self.name)
 
     def get_neighboors(self):
         """returns a list of neighbors
@@ -26,3 +35,6 @@ class BipartiteVertex(ABC):
     def get_neighboor(self, index):
         """returns a neighbor at place index"""
         return self.neighbor_suplier(index)
+
+    def __eq__(self, o: object) -> bool:
+        return isinstance(o, BipartiteVertex) and self.name == o.name

@@ -1,16 +1,17 @@
-from .VertexP import VertexP
-class BipartiteFunctionalGraph(object):
+from perfect_match.objects.IBipartiteGraph import IBipartiteGraph
+class BipartiteFunctionalGraph(IBipartiteGraph):
     """
         this is a final immutble graph hance it doesnt support addition/removal of edges
         addition/removal of vertices
         this object is actually only a wrapper
     """
 
-    def __init__(self, lable_generator=lambda :(), lable_to_vertex_lambda = lambda l:1/0):
+    def __init__(self, d, lable_generator=lambda: (), lable_to_vertex_lambda=lambda l: 1 / 0):
         """ initializes a graph object
             If no dictionaries or None is given,
             an empty bipartite graph will be initiated
         """
+        super().__init__(d)
         self.lable_generator = lable_generator
         self.lable_to_vertex_lambda = lable_to_vertex_lambda
 
