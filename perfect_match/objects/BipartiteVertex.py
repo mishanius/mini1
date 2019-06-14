@@ -26,7 +26,7 @@ class BipartiteVertex(ABC):
                 break
         return res
 
-    def get_neighbore(self, index):
+    def get_neighbor(self, index):
         #TODO: changed this to try
         """returns a neighbore at place index"""
         return self.neighbore_supplier(index)

@@ -1,8 +1,7 @@
-
-
 import json
 import argparse
 import numpy as np
+import random
 from perfect_match.objects.BipartiteGraph import BipartiteGraph
 from perfect_match.objects.BipartiteFunctiionalGraph import BipartiteFunctionalGraph
 from perfect_match.objects.VertexP import VertexP
@@ -25,10 +24,7 @@ def find_match(bipartiteFunctionalGraph):
     while len(matches) < n:
         b = 2*(2 + n / (n - j))
         path = {}
-        chosen = np.random.choice(unmatchedPVertices)
-        while (chosen in superNodes.keys()):
-            chosen = np.random.choice(unmatchedPVertices) #little change: no need [0] if we send only 1 argument
-        unmatchedPVertices.remove(chosen)
+        chosen = unmatchedPVertices.pop(random.randrange(len(unmatchedPVertices)))
         fail_count = 0
         while not truncated_walk(chosen, b - 1, bipartiteFunctionalGraph, path, superNodes, pVertices):
             path = {}
@@ -57,31 +53,26 @@ def truncated_walk(choosenVertic, b, bi_graph, path, superNodes, pVertices, verb
     if choosenVertic in pVertices: #checks if the vertice is from group P
         indGen = np.random.choice(range(n)) #generates a neighbore of choosenVertic, choosenVertice belongs to P.
         #TODO: problem - the line below can generate ANY index in range, isnt necessarelly a neighbor.
-        next = choosenVertic.get_neighbore(indGen) #next = the neighbore, which belongs to Q.
+        next = choosenVertic.get_neighbor(indGen) #next = the neighbore, which belongs to Q.
         path[choosenVertic.__str__()] = next.__str__() #attach the pair (choosenVertice,next)
         return truncated_walk(next, b - 1, bi_graph, path, superNodes, pVertices)
     else:                #this scenerio stands for when choosenVertic is actually from Q
         superNodesKeys = superNodes.keys()
-        flag=0
-        for x in superNodesKeys:
-            if choosenVertic.__str__() == x:     #and this verifies this ver doesnt participate yet in the matching
-                flag=1                     #therefore - we want to add it to match
-                break
-        if flag==0:
-            return True
-        else:
-            other = superNodes[choosenVertic.__str__()] #the value, which is a P vertex
-            del superNodes[choosenVertic.__str__()]
+        if not choosenVertic.__str__() in superNodesKeys:   #check if choosenVertic doesnt participate in the match
+            return True                                     #if it doesnt - we wanna continue, we're good !
+        else:                                               #choosenVertic is already in the match, so we want to update
+            other = superNodes[choosenVertic.__str__()]     #other is choosenVertic' old matched vertice from P
+            del superNodes[choosenVertic.__str__()]         #we erase the old match that choosenVertice participated in
             del superNodes[other]
-            paired_in_super = other #this will ret the ver from Q's matched neighbore, which is from P.
-            path[choosenVertic.__str__()] = paired_in_super
-            paired_in_super_vertex = bi_graph.get_vertex(paired_in_super[0])
-            neighbors = paired_in_super_vertex.get_neighbores().copy()
+            path[choosenVertic.__str__()] = other  #update path to hold (choosenVertic,other) edge
+            paired_in_super_vertex = bi_graph.get_vertex(other[:len(other)-1]) #get p's vertice object (not just label)
+            neighbors = paired_in_super_vertex.get_neighbores().copy() #get all of p's neighbors
             listedSuperNodesKeys = list(superNodesKeys)
-            listedSuperNodesKeys.append(choosenVertic.__str__())
-            neighbors = [x for x in neighbors if x.__str__() not in listedSuperNodesKeys]
+            listedSuperNodesKeys.append(choosenVertic.__str__()) #add choosenVertic to already-matched vertices
+            neighbors = [x for x in neighbors if x.__str__() not in listedSuperNodesKeys] #filter out from neighbors
+                                                                                          #the already-matched vertices
             next = np.random.choice(neighbors) #choose a new vertex from Q so we can continue the procedure
-            path[paired_in_super] = next.__str__()
+            path[other] = next.__str__()
             return truncated_walk(next, b - 1, bi_graph, path, superNodes, pVertices)
 
 
@@ -120,10 +111,6 @@ def matchesToSortedPairs(matches):
             y=[y[1],y[0]]
         fixedmatcheslist.append(y)
     fixedmatcheslist.sort(key=get_label)
-    # ----- THE FOLLOWING 3 LINES ARE TO FIX SORTING BY P! ALSO, CHANGE *if 'p' in y[0]* TO 'Q'
-    #temp = fixedmatcheslist[0]
-    #fixedmatcheslist.remove(temp)
-    #fixedmatcheslist.append(temp)
     return fixedmatcheslist
 
 def get_label(list):
@@ -145,9 +132,9 @@ if __name__ == '__main__':
         print(res)
     if args.full:
         counter=0
-        for i in range(0,10000):
+        for i in range(0,10):
             #TODO: insert argument 'n' aswell to config
-            n=10
+            n=10000
             bi_graph = BipartiteFunctionalGraph(lambda:(i for i in range(0,n)),lambda l:(VertexP(n, l, lambda i:(VertexQ(n, i,lambda i: None) if int(i)>n else VertexQ(n, int(i)%n, lambda i: None)))))
             try:
                 res = find_match(bi_graph)
