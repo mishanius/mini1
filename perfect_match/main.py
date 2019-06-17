@@ -9,6 +9,9 @@ from perfect_match.objects.MetricLogger import MetricLogger
 from perfect_match.objects.VertexP import VertexP
 from perfect_match.objects.BipartiteGraph import BipartiteGraph
 from perfect_match.objects.bi_graph_generator import generate_simple_d_regular_offset_graph
+from perfect_match.objects.RealGraph import RealGraph
+from perfect_match.objects.RealVertexP import RealVertexP
+from perfect_match.objects.RealVertexQ import RealVertexQ
 import time
 
 from perfect_match.utils.functional_graph_factory import modolu_graph
@@ -19,7 +22,7 @@ ALGO_MOV = "algorithm move"
 BRUTO_MOV = "algorithm bruto move"
 
 def find_match(bi_graph):
-    s = [p for p in bi_graph.vertices_p()]
+    s = [p for p in bi_graph.vertices_p()] #list of verties
     n = len(s)
     matches = {}
     supers = {}
@@ -52,7 +55,6 @@ def find_match(bi_graph):
                 # raise Exception("failed retry b:{0} supers:{1}".format(b, matches))
         metric_logger.log_max_time("full_walk", start_time)
         x = len(matches)
-
         matches = mod_symetric_difference(path, matches, supers,chosen)
         metric_logger.inc_metric(ALGO_MOV)
         metric_logger.inc_metric(BRUTO_MOV)
@@ -153,14 +155,17 @@ if __name__ == '__main__':
     if args.json:
         fh = open(args.json)
         data = json.load(fh)
-        bi_graph = BipartiteGraph(data['P'], data['Q'])
-        res = find_match(bi_graph)
+        #bi_graph = BipartiteGraph(data['P'], data['Q'])
+        #res = find_match(bi_graph)
         # sst = reduce(reducer, res, set())
-        print(len(res))
-        print(res)
+        #print(len(res))
+        #print(res)
     if args.full:
         for i in range(0, 100):
-            res = find_match(generate_simple_d_regular_offset_graph(200, 1000))
+            realGraph=RealGraph(10,3)
+            res2=find_match(realGraph)
+            print("ans: ",res2)
+            res = find_match(realGraph)
             # sst = reduce(reducer, res, set())
             # print(len(sst))
             # print(sst)

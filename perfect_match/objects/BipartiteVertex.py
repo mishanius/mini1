@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 
 class BipartiteVertex(ABC):
-    def __init__(self, lable=None, vertex_set=BipartiteSet.P, neighbor_sup=(lambda i: None)):
+    def __init__(self, lable=None, vertex_set=BipartiteSet.P, neighbor_sup=None):
         """
         abstract class representing a vertex in a bipartite graph
         each vertex is BipartiteSet.Q or BipartiteSet.P
