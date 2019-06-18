@@ -4,18 +4,15 @@ import unittest
 from perfect_match.main import create_random_graph_matching_reduction
 
 
-class TestSum(unittest.TestCase):
+class TestGraphs(unittest.TestCase):
 
     def test_random_graph_generation_by_reduction(self):
-
         graph = create_random_graph_matching_reduction(10,5)
         self.validate_d_regularity(graph, 10, 5)
         graph = create_random_graph_matching_reduction(100, 5)
         self.validate_d_regularity(graph, 100, 5)
-        graph = create_random_graph_matching_reduction(100, 50)
-        self.validate_d_regularity(graph, 100, 50)
-        graph = create_random_graph_matching_reduction(1000, 500)
-        self.validate_d_regularity(graph, 1000, 500)
+        graph = create_random_graph_matching_reduction(300, 120)
+        self.validate_d_regularity(graph, 300, 120)
 
     def validate_d_regularity(self, bipartite_graph, n, d):
         ps = {}
