@@ -1,7 +1,7 @@
 import unittest
 
-from perfect_match.objects.VertexP import VertexP
-from perfect_match.objects.VertexQ import VertexQ
+from perfect_match.objects.FunctionalVertexP import FunctionalVertexP
+from perfect_match.objects.FunctionalVertexQ import FunctionalVertexQ
 from perfect_match.utils.functional_graph_factory import modolu_graph
 
 
@@ -25,10 +25,10 @@ class TestFunctionalGraph(unittest.TestCase):
 
     def test_vertex_eq(self):
         test_dict={}
-        test_dict[VertexP(1, lambda i:None)] = "blah blah"
-        new_instance = VertexP(1, lambda i:None)
+        test_dict[FunctionalVertexP(1, lambda i:None)] = "blah blah"
+        new_instance = FunctionalVertexP(1, lambda i:None)
         self.assertTrue(new_instance in test_dict)
-        new_instance = VertexP(2, lambda i: None)
+        new_instance = FunctionalVertexP(2, lambda i: None)
         self.assertFalse(new_instance in test_dict)
-        new_instance = VertexQ(1, lambda i: None)
+        new_instance = FunctionalVertexQ(1, lambda i: None)
         self.assertFalse(new_instance in test_dict)

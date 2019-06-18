@@ -1,48 +1,40 @@
+
 import unittest
-from perfect_match.objects.BipartiteGraph import BipartiteGraph, BipartiteSet
+
+from perfect_match.main import create_random_graph_matching_reduction
+
 
 class TestSum(unittest.TestCase):
-    def setUp(self):
-        p = {"a": ["d"],
-             "b": ["e"],
-             "c": ["f"],
-             }
-        q = {"d": ["a"],
-             "e": ["b"],
-             "f": ["c"],
-             }
 
-        self.graph = BipartiteGraph(p, q)
+    def test_random_graph_generation_by_reduction(self):
 
-    def test_vartices(self):
-        print("Vertices of graph:")
-        actual = set(self.graph.vertices())
-        expected = {'c', 'a', 'b', 'e', 'd', 'f'}
-        self.assertTrue(actual.issubset(expected))
-        self.assertTrue(expected.issubset(actual))
+        graph = create_random_graph_matching_reduction(10,5)
+        self.validate_d_regularity(graph, 10, 5)
+        graph = create_random_graph_matching_reduction(100, 5)
+        self.validate_d_regularity(graph, 100, 5)
+        graph = create_random_graph_matching_reduction(100, 50)
+        self.validate_d_regularity(graph, 100, 50)
+        graph = create_random_graph_matching_reduction(1000, 500)
+        self.validate_d_regularity(graph, 1000, 500)
 
-    def test_edge(self):
-        print("Edges of graph:")
-        print(self.graph.edges())
-        actual = set(self.graph.edges())
-        expected = {('b', 'e'), ('c', 'f'), ('a', 'd')}
-        self.assertTrue(actual.issubset(expected))
-        self.assertTrue(expected.issubset(actual))
+    def validate_d_regularity(self, bipartite_graph, n, d):
+        ps = {}
+        qs = {}
+        for p in bipartite_graph.vertices_p():
+            ps[p] = len(p.get_neighboors())
+            for q in p.get_neighboors():
+                if q in qs:
+                    qs[q] += 1
+                else:
+                    qs[q] = 1
+        # validations
+        self.assertTrue(len(ps) == n)
+        self.assertTrue(len(qs) == n)
+        for p in ps:
+            self.assertTrue(len(p.get_neighboors()) == d)
+        for q in qs:
+            self.assertTrue(qs[q] == d)
 
-    def test_add_vertex(self):
-        self.graph.add_vertex("z", BipartiteSet.Q)
-        actual = set(self.graph.vertices())
-        expected = {'c', 'a', 'b', 'e', 'd', 'f', 'z'}
-        self.assertTrue(actual.issubset(expected))
-        self.assertTrue(expected.issubset(actual))
-
-    def test_add_edge(self):
-        self.graph.add_vertex("z", BipartiteSet.Q)
-        self.graph.add_edge(("a", "z"))
-        actual = set(self.graph.edges())
-        expected = {('b', 'e'), ('c', 'f'), ('a', 'd'), ('a', 'z')}
-        self.assertTrue(actual.issubset(expected))
-        self.assertTrue(expected.issubset(actual))
 
 if __name__ == '__main__':
     unittest.main()
