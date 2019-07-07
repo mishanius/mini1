@@ -1,11 +1,15 @@
 
 import unittest
 
-from perfect_match.main import create_random_graph_matching_reduction
+from perfect_match.utils.real_graph_factory import generate_expander, create_random_graph_matching_reduction
 
 
 class TestGraphs(unittest.TestCase):
 
+    def test_margulis_expander(self):
+        graph = generate_expander()
+        self.validate_d_regularity(graph, 100, 8)
+    
     def test_random_graph_generation_by_reduction(self):
         graph = create_random_graph_matching_reduction(10,5)
         self.validate_d_regularity(graph, 10, 5)

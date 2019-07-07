@@ -26,6 +26,7 @@ class RealVertexP(VertexP):
         self.__neighboors = neighboors
 
     def add_neighboor(self, vertex):
+        # if not vertex in self.__neighboors:
         self.__neighboors.append(vertex)
 
 

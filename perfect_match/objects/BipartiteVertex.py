@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 
-from perfect_match.objects.BipartiteGraph import BipartiteSet
+
+class BipartiteSet(Enum):
+    P = 0
+    Q = 1
 
 
 class BipartiteVertex(ABC):
@@ -17,6 +21,9 @@ class BipartiteVertex(ABC):
 
     def __repr__(self):
         return self.__str__()
+
+    def get_label(self):
+        return self.lable
 
     @property
     def name(self):
@@ -43,6 +50,7 @@ class VertexQ(BipartiteVertex):
 
     def __str__(self):
         return str(self.lable) + "Q"
+
 
 class VertexP(BipartiteVertex):
     def __init__(self, lable=None):

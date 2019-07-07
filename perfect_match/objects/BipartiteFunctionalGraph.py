@@ -1,4 +1,6 @@
 from perfect_match.objects.IBipartiteGraph import IBipartiteGraph
+
+
 class BipartiteFunctionalGraph(IBipartiteGraph):
     """
         this is a final immutble graph hance it doesnt support addition/removal of edges
@@ -14,8 +16,6 @@ class BipartiteFunctionalGraph(IBipartiteGraph):
         super().__init__(d)
         self.lable_generator = lable_generator
         self.lable_to_vertex_lambda = lable_to_vertex_lambda
-
-
 
     def get_vertex(self, lable):
         return self.lable_to_vertex_lambda(lable)
@@ -36,8 +36,7 @@ class BipartiteFunctionalGraph(IBipartiteGraph):
         """
         for v in self.vertices_p():
             for n in v.get_neighboors():
-                yield (v,n)
-
+                yield (v, n)
 
     def __str__(self):
         raise Exception("unimplemented")
