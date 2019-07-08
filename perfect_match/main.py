@@ -1,10 +1,11 @@
 import argparse
 from functools import reduce
-
+import pprint
 import logging
 
 from perfect_match.objects.MetricLogger import MetricLogger
 from perfect_match.objects.match_finder import find_match, max_time
+from perfect_match.utils.functional_graph_factory import modolu_graph
 from perfect_match.utils.real_graph_factory import generate_simple_d_regular_offset_graph, generate_expander, \
     create_random_graph_matching_reduction
 import time
@@ -18,37 +19,72 @@ def reducer(acc, y):
     return acc
 
 
+def complete_test():
+    graph_constructors = (generate_simple_d_regular_offset_graph, modolu_graph, create_random_graph_matching_reduction)
+    for graph_constructor in graph_constructors:
+        if graph_constructor == create_random_graph_matching_reduction:
+            mult = 100
+        else:
+            mult = 1000
+        for i in range(1, 2):
+            metric_logger.experiment = str(mult * i)
+            metric_logger.set_metric("graph generating function", graph_constructor.__name__)
+            metric_logger.set_metric("d", int((mult * i) / 2))
+            metric_logger.set_metric("n", int(mult * i))
+            res = find_match(graph_constructor(int((mult * i) / 2), mult * i), metric_logger)
+            metric_logger.flush_all()
+        metric_logger.create_full_move_plot()
+        metric_logger.trunc_walk_per_match()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Finds matching for d regular graph')
-    parser.add_argument('--full', help='create match in a full graph', )
-    parser.add_argument('--expander', help='create match in an expander graph', )
-    parser.add_argument('--functional', help='create match in a functional graph', )
+    parser.add_argument('-n', type=int, help='number of vertices')
+    parser.add_argument('-d', type=int, help='d-regularity')
+    parser.add_argument('--full', action='store_true', help='create match in a full graph')
+    parser.add_argument('--expander', action='store_true', help='create match in an expander graph')
+    parser.add_argument('--functional', action='store_true', help='create match in a functional graph')
+    parser.add_argument('--random', action='store_true', help='create match in a random d regular graph')
+    parser.add_argument('--complete_test', action='store_true', help='tests all the cases')
     args = parser.parse_args()
     start = time.time()
     metric_logger = MetricLogger(logging.INFO)
     res = 0
-    if args.full:
-        for i in range(0, 1):
-            res = find_match(generate_simple_d_regular_offset_graph(200, 5000), metric_logger)
+    if args.complete_test:
+        complete_test()
+        exit()
+    elif args.full:
+        metric_logger.experiment = "offset graph"
+        metric_logger.set_metric("d", args.d)
+        metric_logger.set_metric("n", args.n)
+        res = find_match(generate_simple_d_regular_offset_graph(args.n, args.d), metric_logger)
+        metric_logger.flush_all()
     elif args.functional:
-        real = create_random_graph_matching_reduction(100, 30)
-        res = find_match(real)
+        metric_logger.experiment = "functional graph"
+        metric_logger.set_metric("d", args.d)
+        metric_logger.set_metric("n", args.n)
+        res = find_match(modolu_graph(args.n, args.d), metric_logger)
+        metric_logger.flush_all()
+    elif args.random:
+        metric_logger.experiment = "random graph"
+        metric_logger.set_metric("d", args.d)
+        metric_logger.set_metric("n", args.n)
+        res = find_match(create_random_graph_matching_reduction(args.n, args.d))
     elif args.expander:
         res = find_match(generate_expander())
     else:
-        print("usage: --full/--expander/--function <some number>")
+        print("usage: --full/--expander/--function/--complete_test -n <some number> -d <some number>")
         exit()
-
-    print(res)
-    sst = reduce(reducer, res, set())
-    print(len(sst))
-    print(sst)
-    sst2 = reduce(reducer, res.values(), set())
-    print(len(sst2))
-    print(sst2)
-
-    metric_logger.flush_all()
 
     end = time.time()
     print("took:{}".format(end - start))
-    print(max_time)
+    sst = reduce(reducer, res, set())
+    sst2 = reduce(reducer, res.values(), set())
+    if len(sst) != args.n:
+        exit(2)
+    elif len(sst2) != args.n:
+        exit(2)
+    else:
+        pp = pprint.PrettyPrinter(indent=4)
+        metric_logger.trunc_walk_per_match()
+        pp.pprint(res)

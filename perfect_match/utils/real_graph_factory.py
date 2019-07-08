@@ -14,7 +14,7 @@ def generate_simple_full_graph(n):
         k.set_neighboors([RealVertexQ(i) for i in range(1, n + 1)])
     return BipartiteRealGraph(n, p_group)
 
-def generate_simple_d_regular_offset_graph(d, n):
+def generate_simple_d_regular_offset_graph(n, d):
     p_group = [RealVertexP(i) for i in range(1, n + 1)]
     for k in range(0, n):
         for a in range(0, d):
@@ -64,7 +64,7 @@ def generate_expander():
     return BipartiteRealGraph(8, p_group)
 
 
-def create_random_graph_matching_reduction(n, d):
+def create_random_graph_matching_reduction(d, n):
     metric_logger = MetricLogger(logging.ERROR)
     p_group = [RealVertexP(i) for i in range(1, n + 1)]
     new_p_group = [RealVertexP(i) for i in range(1, n + 1)]

@@ -11,7 +11,9 @@ ALGO_MOV = "algorithm move"
 BRUTO_MOV = "algorithm bruto move"
 
 
-def find_match(bi_graph, metric_logger=MetricLogger(logging.INFO)):
+def find_match(bi_graph, metric_logger=None):
+    if not metric_logger:
+        metric_logger=MetricLogger(logging.INFO)
     s = [p for p in bi_graph.vertices_p()]
     n = len(s)
     matches = {}
@@ -23,26 +25,12 @@ def find_match(bi_graph, metric_logger=MetricLogger(logging.INFO)):
         starti = time.time()
         b = 2 * (2 + n / (n - j))
         path = {}
-        start_time = time.time()
         chosen_index = np.random.randint(0, n - j)
-        metric_logger.log_max_time("random", start_time)
-        start_time = time.time()
         chosen = s.pop(chosen_index)
-        metric_logger.log_max_time("remove", start_time)
-        fail_count = 0
         start_time = time.time()
         metric_logger.inc_metric(ALGO_MOV)
         metric_logger.inc_metric(BRUTO_MOV)
-        while not truncated_walk(chosen, b - 1, bi_graph, path, supers, 0, metric_logger):
-            metric_logger.log_max_time("truncated_walk", start_time)
-            metric_logger.debug("failed truncated b is {}".format(b))
-            path = {}
-            metric_logger.inc_metric(ALGO_MOV)
-            fail_count += 1
-            if (fail_count > 5000):
-                metric_logger.info("failed more then 5000!!")
-                continue
-                # raise Exception("failed retry b:{0} supers:{1}".format(b, matches))
+        truncated_walk(chosen, b - 1, bi_graph, path, supers, 0, metric_logger)
         metric_logger.log_max_time("full_walk", start_time)
         x = len(matches)
 
@@ -54,7 +42,7 @@ def find_match(bi_graph, metric_logger=MetricLogger(logging.INFO)):
             raise Exception("not a match!!!!!!!!!!!!!!!!")
         j = j + 1
         if j % 500 == 0:
-            metric_logger.info("matched {} failed {}".format(j, fail_count))
+            metric_logger.info("matched {}".format(j))
         metric_logger.log_max_time("whole iteration", starti)
     return matches
 
@@ -84,7 +72,10 @@ def symetric_dif_walk(path, matches, supers, curr, metric_logger):
 
 
 def truncated_walk(s, b, bi_graph, path, supers, move=0, metric_logger=None):
+    moves = 1
     while True:
+        metric_logger.log_max("truncated_walk",moves)
+        metric_logger.append_metric("truncated_walk_moves", moves)
         if isinstance(s, VertexP):
             next = s.get_neighboor(np.random.randint(0, bi_graph.d))
             path[s] = next
@@ -109,6 +100,7 @@ def truncated_walk(s, b, bi_graph, path, supers, move=0, metric_logger=None):
                 metric_logger.inc_metric(ALGO_MOV)
                 s = next
                 b -= 1
+        moves+=1
 
 
 def path_to_matching(path):
