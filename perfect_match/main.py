@@ -32,7 +32,7 @@ def complete_test():
             metric_logger.set_metric("graph generating function", graph_constructor.__name__)
             metric_logger.set_metric("d", int((mult * i) / 2))
             metric_logger.set_metric("n", int(mult * i))
-            res = find_match(graph_constructor(int((mult * i) / 2), mult * i), metric_logger)
+            res = find_match(graph_constructor(mult * i, int((mult * i) / 2)), metric_logger)
             metric_logger.flush_all()
         metric_logger.create_full_move_plot()
         metric_logger.trunc_walk_per_match()
@@ -90,4 +90,4 @@ if __name__ == '__main__':
     else:
         pp = pprint.PrettyPrinter(indent=4)
         metric_logger.trunc_walk_per_match()
-        pp.pprint(res)
+        # pp.pprint(res)

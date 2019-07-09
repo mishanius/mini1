@@ -60,7 +60,7 @@ class MetricLogger(object):
         ys.sort()
         xs.sort()
         plt.plot(xs, ys, '-b', label='number of moves in total')
-        logxs = [math.log2(x) * x * 2 for x in xs]
+        logxs = [math.log2(x) * x*2 for x in xs]
         logxs.sort()
         plt.plot(xs, logxs, '-r', label='log(n)*n*2')
         plt.legend()
