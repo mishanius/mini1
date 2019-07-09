@@ -69,4 +69,30 @@ took:0.3537905216217041
   ```
   ![alt text](https://github.com/mishanius/mini1/blob/michael_real_graph/perfect_match/output_example/myplot.png "Logo Title Text 1")
    
-      
+## more examples 
+```add some examples```
+
+## notes
+### working with functional graphs :
+The class is called BipartiteFunctionalGraph
+1. each BipartiteFunctionalGraph recieves :
+      - a label generation function (lable is usualy a number or a string)
+      - a lable to functionalVertex function
+2. each FunctionalVertex recieves:
+      - a lable 
+      - a neighbore suplire - a function : index-> neighbor vertex
+3. currently we are working with a modulu graph - for each i in P, i's neighbores in Q are i, i+1, i+2, ... (i+d)%n 
+### example from code
+modolu_graph creates a functional modulu graph, the constructor recivies label generator and lable to vertex function
+each vertex i recives a function that mappes an index 0...d-1 to neighbore vertex at index
+```
+def create_neigbor_expression(i, d, n):
+    return lambda index: FunctionalVertexQ(i + index, lambda index: None) if index + i <= n and index < d else (
+        FunctionalVertexQ(index + i - n, lambda index: None) if index < d else None)
+
+def modolu_graph(n, d):
+    label_generator_lambda = lambda: (i for i in range(1, n + 1))
+    label_to_vertex_expression = lambda l: FunctionalVertexP(l, create_neigbor_expression(l, d, n))
+    return BipartiteFunctionalGraph(d, label_generator_lambda, label_to_vertex_expression)
+```
+
