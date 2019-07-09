@@ -75,7 +75,6 @@ def truncated_walk(s, b, bi_graph, path, supers, move=0, metric_logger=None):
     moves = 1
     while True:
         metric_logger.log_max("truncated_walk",moves)
-        metric_logger.append_metric("truncated_walk_moves", moves)
         if isinstance(s, VertexP):
             next = s.get_neighboor(np.random.randint(0, bi_graph.d))
             path[s] = next
@@ -88,6 +87,7 @@ def truncated_walk(s, b, bi_graph, path, supers, move=0, metric_logger=None):
             if s not in supers:
                 metric_logger.debug("true {}".format(b))
                 metric_logger.log_max("truncated_walk", move)
+                metric_logger.append_metric("truncated_walk_moves", moves)
                 return True
             else:
                 paired_in_super = supers[s]
