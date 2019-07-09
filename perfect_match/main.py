@@ -24,9 +24,10 @@ def complete_test():
     for graph_constructor in graph_constructors:
         if graph_constructor != modolu_graph:
             mult = 100
+            continue
         else:
             mult = 1000
-        for i in range(1, 22, 7):
+        for i in range(1, 35, 1):
             metric_logger.experiment = str(mult * i)
             metric_logger.set_metric("graph generating function", graph_constructor.__name__)
             metric_logger.set_metric("d", int((mult * i) / 2))
