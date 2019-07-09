@@ -6,8 +6,12 @@ we follow the following article https://arxiv.org/pdf/0909.3346.pdf
 we work with a number of diffarent graphs:
 - real graphs (all vertices and edges are in ram) 
 - real random graphs 
-- functional garphs (each vertex got a function which generates neighboors as a lazy list)
+- functional garphs (each vertex got a function which generates neighbors as a lazy list)
 - exclusive expander using the margolis construction for bipartite graph 
+
+## dependencies
+- numpy
+- matplotlib
 ## usage
 ```
 main.py --full/--expander/--functional/--random -d <d regularity> -n <number of edges>
@@ -95,4 +99,6 @@ def modolu_graph(n, d):
     label_to_vertex_expression = lambda l: FunctionalVertexP(l, create_neigbor_expression(l, d, n))
     return BipartiteFunctionalGraph(d, label_generator_lambda, label_to_vertex_expression)
 ```
+## working with metric logger : TODO
 
+## a few words regarding the interfaces and classes : TODO
