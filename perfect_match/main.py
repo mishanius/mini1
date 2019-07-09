@@ -22,11 +22,11 @@ def reducer(acc, y):
 def complete_test():
     graph_constructors = (generate_simple_d_regular_offset_graph, modolu_graph, create_random_graph_matching_reduction)
     for graph_constructor in graph_constructors:
-        if graph_constructor == create_random_graph_matching_reduction:
+        if graph_constructor != modolu_graph:
             mult = 100
         else:
             mult = 1000
-        for i in range(1, 2):
+        for i in range(1, 22, 7):
             metric_logger.experiment = str(mult * i)
             metric_logger.set_metric("graph generating function", graph_constructor.__name__)
             metric_logger.set_metric("d", int((mult * i) / 2))
@@ -66,10 +66,12 @@ if __name__ == '__main__':
         res = find_match(modolu_graph(args.n, args.d), metric_logger)
         metric_logger.flush_all()
     elif args.random:
+        graph = create_random_graph_matching_reduction(args.d, args.n)
         metric_logger.experiment = "random graph"
         metric_logger.set_metric("d", args.d)
         metric_logger.set_metric("n", args.n)
-        res = find_match(create_random_graph_matching_reduction(args.n, args.d))
+        res = find_match(graph, metric_logger)
+        metric_logger.flush_all()
     elif args.expander:
         res = find_match(generate_expander())
     else:
