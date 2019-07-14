@@ -72,9 +72,7 @@ took:0.3537905216217041
     ... more matchings...}
   ```
   ![alt text](https://github.com/mishanius/mini1/blob/michael_real_graph/perfect_match/output_example/myplot.png "Logo Title Text 1")
-   
-## More running examples 
-```add some examples```
+  
 
 ## Notes
 ### Working with functional graphs :
