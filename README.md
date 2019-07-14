@@ -97,6 +97,3 @@ def modolu_graph(n, d):
     label_to_vertex_expression = lambda l: FunctionalVertexP(l, create_neigbor_expression(l, d, n))
     return BipartiteFunctionalGraph(d, label_generator_lambda, label_to_vertex_expression)
 ```
-## Working with metric logger : TODO
-
-## A few words regarding the interfaces and classes : TODO
