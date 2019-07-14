@@ -10,6 +10,7 @@ We support working on a number of different graphs:
 - Exclusive expander using the margolis construction for bipartite graph 
 
 ## Dependencies
+- python3
 - numpy
 - matplotlib
 ## Usage
