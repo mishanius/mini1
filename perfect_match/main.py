@@ -20,22 +20,15 @@ def reducer(acc, y):
 
 
 def complete_test():
-    graph_constructors = (generate_simple_d_regular_offset_graph, modolu_graph, create_random_graph_matching_reduction)
-    for graph_constructor in graph_constructors:
-        if graph_constructor != modolu_graph:
-            mult = 100
-            continue
-        else:
-            mult = 1000
-        for i in range(1, 35, 1):
-            metric_logger.experiment = str(mult * i)
-            metric_logger.set_metric("graph generating function", graph_constructor.__name__)
-            metric_logger.set_metric("d", int((mult * i) / 2))
-            metric_logger.set_metric("n", int(mult * i))
-            res = find_match(graph_constructor(mult * i, int((mult * i) / 2)), metric_logger)
-            metric_logger.flush_all()
-        metric_logger.create_full_move_plot()
-        metric_logger.trunc_walk_per_match()
+    for i in range(1, 35, 1):
+        metric_logger.experiment = str(1000 * i)
+        metric_logger.set_metric("graph generating function", modolu_graph.__name__)
+        metric_logger.set_metric("d", int((1000 * i) / 2))
+        metric_logger.set_metric("n", int(1000 * i))
+        res = find_match(modolu_graph(1000 * i, int((1000 * i) / 2)), metric_logger)
+        metric_logger.flush_all()
+    metric_logger.create_full_move_plot()
+    metric_logger.trunc_walk_per_match()
 
 
 if __name__ == '__main__':
@@ -74,7 +67,13 @@ if __name__ == '__main__':
         res = find_match(graph, metric_logger)
         metric_logger.flush_all()
     elif args.expander:
-        res = find_match(generate_expander())
+        metric_logger.experiment = "expander"
+        args.n = 100
+        args.d = 8
+        metric_logger.set_metric("d", args.d)
+        metric_logger.set_metric("n", args.n)
+        res = find_match(generate_expander(), metric_logger)
+        metric_logger.flush_all()
     else:
         print("usage: --full/--expander/--function/--complete_test -n <some number> -d <some number>")
         exit()
@@ -90,4 +89,4 @@ if __name__ == '__main__':
     else:
         pp = pprint.PrettyPrinter(indent=4)
         metric_logger.trunc_walk_per_match()
-        # pp.pprint(res)
+        pp.pprint(res)
